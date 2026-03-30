@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Victor de Carufel — Plan d'entraînement technique</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue:         #3b82f6;
+    --blue-dim:     rgba(59,130,246,0.12);
+    --blue-border:  rgba(59,130,246,0.25);
+    --green:        #10b981;
+    --green-dim:    rgba(16,185,129,0.10);
+    --green-border: rgba(16,185,129,0.22);
+    --purple:       #8b5cf6;
+    --purple-dim:   rgba(139,92,246,0.10);
+    --purple-border:rgba(139,92,246,0.22);
+    --amber:        #f59e0b;
+    --amber-dim:    rgba(245,158,11,0.10);
+    --amber-border: rgba(245,158,11,0.22);
+    --cyan:         #0ea5e9;
+    --cyan-dim:     rgba(14,165,233,0.10);
+    --cyan-border:  rgba(14,165,233,0.22);
+    --slate:        #6b7280;
+    --card:         rgba(30,41,59,0.62);
+    --card-border:  rgba(100,116,139,0.18);
+    --text-hi:      #f1f5f9;
+    --text-mid:     #cbd5e1;
+    --text-lo:      #94a3b8;
+    --text-muted:   #64748b;
+    --text-footer:  #475569;
+  }
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text-mid);
+    line-height: 1.5;
+    position: relative;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 80%, rgba(14,165,233,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(59,130,246,0.06) 0%, transparent 70%);
+  }
+  .shell {
+    position: relative; z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+  }
+  /* ─── HEADER ─── */
+  .header { text-align: center; margin-bottom: 26px; }
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+    border-radius: 10px;
+    padding: 5px 18px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+  .header h1 {
+    font-size: 28px; font-weight: 800;
+    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+  .header .sub { color: var(--text-lo);    font-size: 13px; margin-top: 6px; font-weight: 500; }
+  .header .det { color: var(--text-muted); font-size: 12px; margin-top: 3px; }
+  /* ─── TAB RAIL ─── */
+  .tab-rail {
+    display: flex; gap: 5px;
+    background: rgba(30,41,59,0.7);
+    border: 1px solid rgba(100,116,139,0.15);
+    border-radius: 14px;
+    padding: 5px;
+    margin-bottom: 22px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tab-rail::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex: 0 0 auto;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    color: var(--text-lo);
+    font-size: 12px; font-weight: 600;
+    padding: 8px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .tab-btn:hover  { background: rgba(14,165,233,0.12); color: #fff; }
+  .tab-btn.active {
+    background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(14,165,233,0.3);
+  }
+  /* ─── PANELS ─── */
+  .panel { display: none; animation: fadeIn 0.22s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+  /* ─── INFO BOXES ─── */
+  .info-box {
+    border-radius: 12px; padding: 14px 18px; margin-bottom: 18px;
+    font-size: 13px; line-height: 1.55;
+  }
+  .info-box.blue   { background: var(--blue-dim);   border: 1px solid var(--blue-border);   color: #93c5fd; }
+  .info-box.green  { background: var(--green-dim);  border: 1px solid var(--green-border);  color: #6ee7b7; }
+  .info-box.purple { background: var(--purple-dim); border: 1px solid var(--purple-border); color: #a78bfa; }
+  .info-box.amber  { background: var(--amber-dim);  border: 1px solid var(--amber-border);  color: #fbbf24; }
+  .info-box.cyan   { background: var(--cyan-dim);   border: 1px solid var(--cyan-border);   color: #22d3ee; }
+  /* ─── PHASE SELECTOR ─── */
+  .phase-selector {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .phase-selector .ps-label { font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; width: 100%; text-align: center; margin-bottom: 4px; }
+  .phase-btn {
+    background: rgba(30,41,59,0.7);
+    border: 1px solid rgba(100,116,139,0.25);
+    border-radius: 10px;
+    color: var(--text-lo);
+    font-size: 12px; font-weight: 600;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: all 0.18s;
+    text-align: center;
+  }
+  .phase-btn:hover { color: #fff; }
+  .phase-btn .pb-weeks { font-size: 10px; opacity: 0.7; display: block; margin-top: 1px; }
+  .phase-btn[data-phase="0"] { border-color: rgba(14,165,233,0.3); }
+  .phase-btn[data-phase="0"]:hover,
+  .phase-btn[data-phase="0"].active {
+    background: rgba(14,165,233,0.18); border-color: var(--cyan); color: var(--cyan);
+    box-shadow: 0 0 8px rgba(14,165,233,0.2);
+  }
+  .phase-btn[data-phase="1"] { border-color: rgba(245,158,11,0.3); }
+  .phase-btn[data-phase="1"]:hover,
+  .phase-btn[data-phase="1"].active {
+    background: rgba(245,158,11,0.18); border-color: var(--amber); color: var(--amber);
+    box-shadow: 0 0 8px rgba(245,158,11,0.2);
+  }
+  .phase-btn[data-phase="2"] { border-color: rgba(16,185,129,0.3); }
+  .phase-btn[data-phase="2"]:hover,
+  .phase-btn[data-phase="2"].active {
+    background: rgba(16,185,129,0.18); border-color: var(--green); color: var(--green);
+    box-shadow: 0 0 8px rgba(16,185,129,0.2);
+  }
+  /* phase info strip */
+  .phase-strip {
+    border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+    font-size: 12px; line-height: 1.5; display: none;
+  }
+  .phase-strip.active { display: block; }
+  .phase-strip.p0 { background: var(--cyan-dim);   border: 1px solid var(--cyan-border);   color: #22d3ee; }
+  .phase-strip.p1 { background: var(--amber-dim);  border: 1px solid var(--amber-border);  color: #fbbf24; }
+  .phase-strip.p2 { background: var(--green-dim);  border: 1px solid var(--green-border);  color: #6ee7b7; }
+  .phase-strip strong { font-weight: 700; }
+  /* ─── WEEKLY ROWS ─── */
+  .week-row {
+    display: grid;
+    grid-template-columns: 90px 120px 1fr 110px;
+    align-items: center;
+    gap: 10px;
+    border-radius: 12px; padding: 11px 14px;
+    border: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .week-row:hover { border-color: rgba(100,116,139,0.25); }
+  .week-row.video { background: rgba(59,130,246,0.07);  border-color: rgba(59,130,246,0.18); }
+  .week-row.self  { background: rgba(16,185,129,0.07);  border-color: rgba(16,185,129,0.18); }
+  .week-row.rest  { background: rgba(51,65,85,0.35);    opacity: 0.55; }
+  .week-row .day-name {
+    font-weight: 700; font-size: 13px; color: var(--text-hi);
+    white-space: nowrap;
+  }
+  .tag {
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    border-radius: 20px; padding: 3px 8px;
+    font-size: 11px; font-weight: 600;
+    white-space: nowrap; width: 100%;
+  }
+  .tag.video { background: rgba(59,130,246,0.18);  border: 1px solid rgba(59,130,246,0.30);  color: var(--blue); }
+  .tag.self  { background: rgba(16,185,129,0.18);  border: 1px solid rgba(16,185,129,0.30);  color: var(--green); }
+  .tag.rest  { background: rgba(107,114,128,0.22); border: 1px solid rgba(107,114,128,0.30); color: var(--slate); }
+  .tag svg   { width:13px; height:13px; flex-shrink: 0; }
+  .week-row .mid { min-width: 0; }
+  .week-row .focus        { font-size: 12.5px; color: var(--text-lo); line-height: 1.4; }
+  .week-row .capsule-name { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-style: italic; }
+  .week-row .btn-cell {
+    display: flex; justify-content: flex-end; align-items: center;
+  }
+  .watch-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    color: #fff; border: none; border-radius: 8px;
+    padding: 6px 10px; font-size: 11px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; width: 100%;
+    text-decoration: none;
+    transition: opacity 0.18s, transform 0.1s;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+  }
+  .watch-btn:hover  { opacity: 0.88; }
+  .watch-btn:active { transform: scale(0.96); }
+  .watch-btn svg    { width: 12px; height: 12px; flex-shrink: 0; }
+  .watch-btn.ref {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+  }
+  .no-btn { display: block; width: 100%; height: 30px; }
+  /* ─── SESSION TEMPLATE ─── */
+  .phase-block {
+    border-radius: 14px; overflow: hidden;
+    border: 1px solid rgba(100,116,139,0.18);
+    background: var(--card);
+  }
+  .phase-block .stripe-wrap { display: flex; }
+  .phase-block .stripe      { width: 5px; flex-shrink: 0; }
+  .phase-block .stripe.amber  { background: var(--amber); }
+  .phase-block .stripe.purple { background: var(--purple); }
+  .phase-block .stripe.green  { background: var(--green); }
+  .phase-block .stripe.cyan   { background: var(--cyan); }
+  .phase-block .inner         { padding: 14px 16px; flex: 1; }
+  .phase-block .phase-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+  .phase-block .phase-head .icon  { font-size: 20px; line-height: 1; }
+  .phase-block .phase-head .title { font-weight: 700; font-size: 15px; color: var(--text-hi); }
+  .phase-block .phase-head .dur   { font-size: 11px; color: var(--text-muted); }
+  .bullet-list { list-style: none; }
+  .bullet-list li { display: flex; gap: 9px; margin-bottom: 5px; font-size: 12.5px; color: var(--text-mid); line-height: 1.5; }
+  .bullet-list li .dot { flex-shrink:0; width:7px; height:7px; border-radius:50%; margin-top:7px; }
+  .bullet-list li .dot.amber  { background: var(--amber); }
+  .bullet-list li .dot.purple { background: var(--purple); }
+  .bullet-list li .dot.green  { background: var(--green); }
+  .bullet-list li .dot.cyan   { background: var(--cyan); }
+  .core-block {
+    border-radius: 14px; overflow: hidden;
+    border: 1px solid rgba(99,102,241,0.25);
+    background: var(--card);
+  }
+  .core-head { padding: 13px 18px 0; display: flex; align-items: baseline; gap: 10px; }
+  .core-head .icon  { font-size: 20px; }
+  .core-head .title { font-weight: 700; font-size: 15px; color: var(--text-hi); }
+  .core-head .dur   { font-size: 11px; color: var(--text-muted); }
+  .core-cols { display: flex; margin-top: 12px; }
+  .core-col  { flex: 1; padding: 11px 14px 15px; }
+  .core-col.video { background: rgba(59,130,246,0.06);  border-top: 2px solid rgba(59,130,246,0.4); }
+  .core-col.self  { background: rgba(16,185,129,0.06);  border-top: 2px solid rgba(16,185,129,0.4); margin-left: 2px; }
+  .core-col .col-label       { font-size: 11px; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.03em; }
+  .core-col.video .col-label { color: var(--blue); }
+  .core-col.self  .col-label { color: var(--green); }
+  .core-col .bullet-list li .dot.col-video { background: var(--blue); }
+  .core-col .bullet-list li .dot.col-self  { background: var(--green); }
+  .core-col .bullet-list li { font-size: 12px; }
+  .core-col .pointer-note {
+    margin-top: 10px; padding: 7px 10px;
+    background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 8px; font-size: 11px; color: #93c5fd; line-height: 1.4;
+  }
+  .quality-section {
+    margin-top: 12px; border-radius: 12px;
+    background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); overflow: hidden;
+  }
+  .quality-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; cursor: pointer; user-select: none; transition: background 0.15s;
+  }
+  .quality-header:hover { background: rgba(245,158,11,0.12); }
+  .quality-header .title-row { display: flex; align-items: center; gap: 8px; }
+  .quality-header .icon  { font-size: 18px; }
+  .quality-header .title { font-size: 13px; font-weight: 700; color: #fbbf24; }
+  .quality-header .chevron { font-size: 16px; color: #fbbf24; transition: transform 0.2s; }
+  .quality-header.open .chevron { transform: rotate(90deg); }
+  .quality-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .quality-body.open { max-height: 600px; }
+  .quality-body .inner { padding: 0 14px 12px; }
+  .quality-item { margin-bottom: 8px; padding-left: 16px; position: relative; }
+  .quality-item::before { content: '\2713'; position: absolute; left: 0; color: #fbbf24; font-weight: 700; font-size: 13px; }
+  .quality-item .label { font-weight: 600; font-size: 12px; color: var(--text-hi); }
+  .quality-item .desc  { font-size: 11.5px; color: var(--text-lo); line-height: 1.45; margin-top: 2px; }
+  .total-pill {
+    margin-top: 6px; background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.2);
+    border-radius: 10px; padding: 10px 16px; text-align: center;
+    font-size: 13px; font-weight: 600; color: #22d3ee;
+  }
+  /* ─── PROGRESSION ─── */
+  .week-card { border-radius: 14px; overflow: hidden; border: 1px solid rgba(100,116,139,0.18); }
+  .week-card .wk-header { display: flex; align-items: center; gap: 12px; padding: 11px 18px; }
+  .week-card .wk-badge  { border-radius: 10px; padding: 3px 11px; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: 0.06em; white-space: nowrap; }
+  .week-card .wk-theme  { font-size: 16px; font-weight: 700; color: var(--text-hi); }
+  .week-card .wk-body   { padding: 12px 18px; background: var(--card); }
+  .week-card .wk-focus  { font-size: 13px; font-weight: 600; font-style: italic; margin-bottom: 8px; }
+  .week-card .wk-detail { display: flex; gap: 10px; margin-bottom: 5px; font-size: 12.5px; color: var(--text-mid); line-height: 1.5; }
+  .week-card .wk-detail .arrow { flex-shrink:0; font-size:11px; margin-top:2px; }
+  .progression-connector { text-align: center; color: var(--text-footer); font-size: 13px; margin: 4px 0; }
+  /* ─── CUES ─── */
+  .cues-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cue-card  { background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px; }
+  .cue-card .cue-head { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .cue-card .cue-icon { font-size: 20px; line-height: 1; }
+  .cue-card .cue-cat  { font-weight: 700; font-size: 13px; color: var(--text-hi); }
+  .cue-card .cue-text { font-size: 12px; color: var(--text-lo); line-height: 1.45; }
+  /* ─── TIPS ─── */
+  .tip-card { display: flex; gap: 14px; align-items: flex-start; background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px 16px; }
+  .tip-card .tip-icon  { font-size: 22px; flex-shrink: 0; line-height: 1.2; }
+  .tip-card .tip-title { font-weight: 700; font-size: 13.5px; color: var(--text-hi); margin-bottom: 3px; }
+  .tip-card .tip-text  { font-size: 12.5px; color: var(--text-lo); line-height: 1.45; }
+  .tip-card.featured { border: 1px solid rgba(14,165,233,0.3); background: rgba(14,165,233,0.08); }
+  .tip-card.featured .tip-title { color: #22d3ee; }
+  /* ─── FOOTER ─── */
+  .footer {
+    margin-top: 32px; padding-top: 18px;
+    border-top: 1px solid rgba(100,116,139,0.15);
+    text-align: center; font-size: 11px; color: var(--text-footer); line-height: 1.7;
+  }
+  @media (max-width: 520px) {
+    .shell { padding: 20px 14px 40px; }
+    .header h1 { font-size: 23px; }
+    .week-row { grid-template-columns: 80px 1fr; grid-template-rows: auto auto; gap: 6px 10px; padding: 12px 14px; }
+    .week-row .mid      { grid-column: 1 / -1; }
+    .week-row .btn-cell { grid-column: 1 / -1; justify-content: flex-start; }
+    .watch-btn { width: auto; }
+    .core-cols { flex-direction: column; }
+    .core-col.self { margin-left: 0; margin-top: 2px; }
+    .cues-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="header">
+    <div class="badge">Plan de Developpement Individuel — Entrainement Technique</div>
+    <h1>Victor de Carufel</h1>
+    <p class="sub">Plan technique maison — Ete 2026 · Milieu Defensif (#6)</p>
+    <p class="det">5-6 Jours / Semaine &nbsp;·&nbsp; 15-20 Min Par Seance &nbsp;·&nbsp; Ballon Seulement</p>
+  </header>
+  <nav class="tab-rail" role="tablist">
+    <button class="tab-btn active" data-tab="0" role="tab">Plan hebdo</button>
+    <button class="tab-btn"        data-tab="1" role="tab">Structure seance</button>
+    <button class="tab-btn"        data-tab="2" role="tab">Progression 6 semaines</button>
+    <button class="tab-btn"        data-tab="3" role="tab">Conseils techniques</button>
+    <button class="tab-btn"        data-tab="4" role="tab">Mindset & autonomie</button>
+  </nav>
+  <!-- PANEL 0 : WEEKLY PLAN -->
+  <section class="panel active" data-panel="0">
+    <div class="info-box cyan">
+      <strong>Comment ca fonctionne :</strong> Le plan est divise en <strong>3 phases</strong>. Chaque phase a sa propre semaine type avec des capsules differentes. Selectionne ta phase ci-dessous pour voir le plan de la semaine. Les jours <strong style="color:#60a5fa">Video guidee</strong> : regarder la capsule puis repliquer. Les jours <strong style="color:#34d399">Autonomes</strong> : travailler seul sur le focus. Dimanche = repos.
+    </div>
+    <div class="phase-selector">
+      <span class="ps-label">Selectionner la phase</span>
+      <button class="phase-btn active" data-phase="0">
+        Phase 1
+        <span class="pb-weeks">Semaines 1-2 · Ball Mastery</span>
+      </button>
+      <button class="phase-btn" data-phase="1">
+        Phase 2
+        <span class="pb-weeks">Semaines 3-4 · Passe & Relance</span>
+      </button>
+      <button class="phase-btn" data-phase="2">
+        Phase 3
+        <span class="pb-weeks">Semaines 5-6 · Exterieur</span>
+      </button>
+    </div>
+    <div class="phase-strip p0 active">
+      <strong>Phase 1 — Ball Mastery & controle sous pression</strong> · Semaines 1 & 2<br>
+      Capsules : V Behind + Neymar Turn · Croqueta + Outside V · Maradona + Hook. Focus autonome : reception orientee + protection du ballon.
+    </div>
+    <div class="phase-strip p1">
+      <strong>Phase 2 — Passe & relance sous pression</strong> · Semaines 3 & 4<br>
+      Capsules : Speed Dribbling · Half Turn First Touch · Quick Feet Drills. Focus autonome : passe courte precise + se retourner dos au jeu + relance longue.
+    </div>
+    <div class="phase-strip p2">
+      <strong>Phase 3 — Terrain exterieur · Sequences #6</strong> · Semaines 5 & 6<br>
+      Capsules : Hook + Cruyff Turn · Half Turn First Touch · Wall Drills. Focus autonome : sequence complete #6 — reception sous pression → scan → distribution.
+    </div>
+    <div id="weekly-rows" style="display:flex; flex-direction:column; gap:8px;"></div>
+  </section>
+  <!-- PANEL 1 : SESSION TEMPLATE -->
+  <section class="panel" data-panel="1">
+    <div class="phase-block" style="margin-bottom:12px;">
+      <div class="stripe-wrap">
+        <div class="stripe amber"></div>
+        <div class="inner">
+          <div class="phase-head">
+            <span class="icon">🔥</span>
+            <span class="title">Echauffement avec le ballon</span>
+            <span class="dur">3-4 min</span>
+          </div>
+          <ul class="bullet-list">
+            <li><span class="dot amber"></span><span>Dribbler en zigzag, changer de direction toutes les 5 touches.</span></li>
+            <li><span class="dot amber"></span><span>Alterner les pieds — gauche, droit, gauche, droit — rester fluide.</span></li>
+            <li><span class="dot amber"></span><span>Ajouter quelques toe taps ou step-overs pour reveiller la coordination.</span></li>
+            <li><span class="dot amber"></span><span><em>Objectif : ressentir le ballon, se deverrouiller — sans precipitation.</em></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="core-block" style="margin-bottom:12px;">
+      <div class="core-head">
+        <span class="icon">⚽</span>
+        <span class="title">Focus technique principal</span>
+        <span class="dur">8-10 min</span>
+      </div>
+      <div class="core-cols">
+        <div class="core-col video">
+          <div class="col-label">📹 Jours Video guidee</div>
+          <ul class="bullet-list">
+            <li><span class="dot col-video"></span><span>Ouvrir la video du jour depuis l'onglet <strong>Plan hebdo</strong> — la regarder en entier d'abord.</span></li>
+            <li><span class="dot col-video"></span><span>Repliquer immediatement les mouvements — faire 2-3 series du geste principal.</span></li>
+            <li><span class="dot col-video"></span><span>Se concentrer sur une chose a la fois : forme, toucher ou rythme.</span></li>
+            <li><span class="dot col-video"></span><span>Repos 20-30 secondes entre les series — qualite avant vitesse.</span></li>
+          </ul>
+          <div class="pointer-note">👆 Les liens video sont dans l'onglet <strong>Plan hebdo</strong> — appuyer sur "Watch Video" a cote du jour.</div>
+        </div>
+        <div class="core-col self">
+          <div class="col-label">🏃 Jours Autonomes</div>
+          <ul class="bullet-list">
+            <li><span class="dot col-self"></span><span>Choisir le drill du jour selon la phase (voir plan hebdo).</span></li>
+            <li><span class="dot col-self"></span><span>Faire 3 series du drill, repos 20-30 secondes entre chaque.</span></li>
+            <li><span class="dot col-self"></span><span>Changer de pied ou de direction a mi-parcours de chaque serie.</span></li>
+            <li><span class="dot col-self"></span><span>Se demander : <em>« Ma passe est-elle precise ? Est-ce que je scanne avant de recevoir ? »</em></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="quality-section">
+      <div class="quality-header" onclick="toggleQuality()">
+        <div class="title-row">
+          <span class="icon">✓</span>
+          <span class="title">Qu'est-ce qu'un geste « propre » ?</span>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+      <div class="quality-body" id="quality-body">
+        <div class="inner">
+          <div class="quality-item">
+            <div class="label">Ball Mastery & Controle</div>
+            <div class="desc">Propre = tu peux t'arreter au milieu du geste et garder le ballon sous le pied sans ajuster. Pas de double touche, pas de ballon qui s'echappe.</div>
+          </div>
+          <div class="quality-item">
+            <div class="label">Reception & Protection</div>
+            <div class="desc">Propre = premiere touche orientee vers l'espace libre, corps entre le ballon et l'adversaire imaginaire. Le ballon ne rebondit pas a plus d'un pied.</div>
+          </div>
+          <div class="quality-item">
+            <div class="label">Passe & Relance</div>
+            <div class="desc">Propre = la passe arrive dans les pieds du receveur, avec le bon poids (ni trop forte, ni trop molle). Le geste est fluide, pas saccade.</div>
+          </div>
+          <div class="quality-item">
+            <div class="label">Se retourner sous pression</div>
+            <div class="desc">Propre = le demi-tour est fait en 1-2 touches max, avec le ballon protege. Tu fais face au jeu rapidement, pret a distribuer.</div>
+          </div>
+          <p style="margin-top:10px; font-size:11.5px; color:#fbbf24; font-style:italic;">
+            💡 Si tu perds le controle en accelerant, divise ton objectif par deux et ralentis. La qualite bat toujours la vitesse.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="phase-block" style="margin-bottom:12px; margin-top:12px;">
+      <div class="stripe-wrap">
+        <div class="stripe purple"></div>
+        <div class="inner">
+          <div class="phase-head">
+            <span class="icon">🎯</span>
+            <span class="title">Defi court</span>
+            <span class="dur">3-4 min</span>
+          </div>
+          <ul class="bullet-list">
+            <li><span class="dot purple"></span><span>Appliquer ce qui vient d'etre travaille dans un mini-defi (ex : <em>« 10 passes precises d'affilee contre le mur sans que le ballon depasse 1m du pied »</em>).</span></li>
+            <li><span class="dot purple"></span><span>Se fixer un objectif honnete — atteignable mais pas facile.</span></li>
+            <li><span class="dot purple"></span><span>Si atteint, essayer de le depasser. Sinon, c'est la cible pour la prochaine fois.</span></li>
+            <li><span class="dot purple"></span><span><em>Terminer sur une repetition positive — finir avec un toucher propre et confiant.</em></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="phase-block" style="margin-bottom:12px;">
+      <div class="stripe-wrap">
+        <div class="stripe green"></div>
+        <div class="inner">
+          <div class="phase-head">
+            <span class="icon">🌙</span>
+            <span class="title">Retour au calme</span>
+            <span class="dur">1-2 min</span>
+          </div>
+          <ul class="bullet-list">
+            <li><span class="dot green"></span><span>Dribbler lentement, sans pression — juste profiter du ballon.</span></li>
+            <li><span class="dot green"></span><span>Penser : <em>« Quelle est la chose que j'ai bien faite aujourd'hui ? »</em></span></li>
+            <li><span class="dot green"></span><span>Etirements legers des jambes — 30 secondes de chaque cote.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="total-pill">⏱️ Duree totale : 15-20 minutes</div>
+  </section>
+  <!-- PANEL 2 : PROGRESSION -->
+  <section class="panel" data-panel="2">
+    <div class="info-box amber" style="margin-bottom:18px;">
+      <strong>⚠️ Et si je rate mon objectif ?</strong><br>
+      La progression n'est pas lineaire. Si tu rates ton objectif <strong>2 seances d'affilee</strong>, recule a la cible de la semaine precedente. Pas de honte — c'est un entrainement intelligent. Demande-toi : <em>« Qu'est-ce qui etait different ? Sommeil ? Surface ? Distraction ? »</em>
+    </div>
+    <div id="progression-cards" style="display:flex; flex-direction:column; gap:14px;"></div>
+  </section>
+  <!-- PANEL 3 : COACHING CUES -->
+  <section class="panel" data-panel="3">
+    <div class="info-box purple">
+      Ces rappels techniques et mentaux s'appliquent a chaque seance. Tu n'as pas besoin de tout retenir en meme temps — <strong>choisis 1 ou 2 par jour</strong>.
+    </div>
+    <div class="cues-grid" id="cues-grid"></div>
+  </section>
+  <!-- PANEL 4 : MINDSET & AUTONOMY -->
+  <section class="panel" data-panel="4">
+    <div class="info-box cyan">
+      Ce plan est le tien. C'est toi qui decides de te presenter chaque jour. Ces conseils sont la pour t'aider a rester motive et a progresser — sans pression exterieure.
+    </div>
+    <div id="tips-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+  </section>
+  <footer class="footer">
+    Les capsules video sont sur YouTube — accessibles sans connexion sur tous les appareils.<br>
+    Ce plan fait partie du Plan de Developpement Individuel (PDI) de Victor · ProBreakthrough.<br>
+    A revoir avec Philippe apres 3 semaines.
+  </footer>
+</div>
+<script>
+const SVG_PLAY  = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>`;
+const SVG_CLOCK = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>`;
+const SVG_OPEN  = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+
+// ─── CAPSULES PAR PHASE (adapted for #6 defensive midfielder) ───
+const capsulesByPhase = [
+  // Phase 1 — Ball Mastery & controle sous pression
+  [
+    { title: '"V" Behind + Neymar Turn',  url: 'https://youtu.be/Ey5WsPb234A' },
+    { title: 'Croqueta + Outside "V"',    url: 'https://youtu.be/p1N51iBVVbI' },
+    { title: 'Maradona + Hook',           url: 'https://youtu.be/odOb1kyCsPQ' },
+  ],
+  // Phase 2 — Passe & relance sous pression
+  [
+    { title: 'Speed Dribbling',            url: 'https://www.youtube.com/shorts/inF-Sxrd4n4' },
+    { title: 'Half Turn First Touch',       url: 'https://www.youtube.com/shorts/cNwE7CRpueA' },
+    { title: 'Quick Feet Drills',          url: 'https://www.youtube.com/shorts/1E5tu5uyATY' },
+  ],
+  // Phase 3 — Terrain exterieur · Sequences #6
+  [
+    { title: 'Hook + Cruyff Turn',        url: 'https://youtu.be/DaCiwkWH-0k' },
+    { title: 'Half Turn First Touch',     url: 'https://www.youtube.com/shorts/cNwE7CRpueA' },
+    { title: 'Wall Drills',               url: 'https://youtu.be/hOIN1vwv5Xk' },
+  ],
+];
+
+// ─── SEMAINES TYPE PAR PHASE (#6 defensive midfielder) ───
+const weekTemplates = [
+  // PHASE 1 — Ball Mastery & controle sous pression (interieur)
+  [
+    { day:'Lundi',    type:'video', label:'Video guidee', focus:'Capsule Ball Mastery — repliquer + defi technique. Se concentrer sur la protection du ballon.', slot:0 },
+    { day:'Mardi',    type:'self',  label:'Autonome',     focus:'Reception orientee dos au jeu — controle + demi-tour vers l\'avant, 3x10 deux pieds.' },
+    { day:'Mercredi', type:'video', label:'Video guidee', focus:'Capsule Ball Mastery — repetition + rythme croissant. Garder le ballon proche.', slot:1 },
+    { day:'Jeudi',    type:'self',  label:'Autonome',     focus:'Protection du ballon — corps entre le ballon et l\'adversaire imaginaire, 3x10 chaque cote.' },
+    { day:'Vendredi', type:'video', label:'Video guidee', focus:'Capsule Ball Mastery — enchainer avec vitesse. Premiere touche propre.', slot:2 },
+    { day:'Samedi',   type:'self',  label:'Autonome',     focus:'Enchainement : reception → demi-tour → dribble 5m → passe imaginaire. Fluidite.' },
+    { day:'Dimanche', type:'rest',  label:'Repos',        focus:'Recuperation' },
+  ],
+  // PHASE 2 — Passe & relance sous pression (interieur)
+  [
+    { day:'Lundi',    type:'video', label:'Video guidee', focus:'Capsule Speed Dribbling — dribble rapide + changement de direction pour sortir de la pression.', slot:0 },
+    { day:'Mardi',    type:'self',  label:'Autonome',     focus:'Passe courte contre le mur — 2 touches max (controle + passe), 3x15 pied D + pied G.' },
+    { day:'Mercredi', type:'video', label:'Video guidee', focus:'Capsule Half Turn First Touch — recevoir dos au jeu et se retourner proprement pour relancer.', slot:1 },
+    { day:'Jeudi',    type:'self',  label:'Autonome',     focus:'Se retourner dos au jeu — reception + crochet interieur + passe vers l\'avant, 3x10.' },
+    { day:'Vendredi', type:'video', label:'Video guidee', focus:'Capsule Quick Feet — rapidite des appuis + controle sous pression.', slot:2 },
+    { day:'Samedi',   type:'self',  label:'Autonome',     focus:'Sequence #6 : reception sous pression → demi-tour → passe longue imaginaire vers l\'aile.' },
+    { day:'Dimanche', type:'rest',  label:'Repos',        focus:'Recuperation' },
+  ],
+  // PHASE 3 — Terrain exterieur · Sequences #6
+  [
+    { day:'Lundi',    type:'video', label:'Video guidee', focus:'Capsule Hook + Cruyff Turn — enchainer les deux gestes pour se defaire de la pression.', slot:0 },
+    { day:'Mardi',    type:'self',  label:'Autonome',     focus:'Sequence #6 : reception → scan → demi-tour → passe courte precise, 3x10.' },
+    { day:'Mercredi', type:'video', label:'Video guidee', focus:'Capsule Half Turn First Touch — reprise exterieure du demi-tour sous pression, surface reelle.', slot:1 },
+    { day:'Jeudi',    type:'self',  label:'Autonome',     focus:'Wall drills : passe courte + controle oriente + relance, 3x15 two-touch max.', refUrl:'https://youtu.be/hOIN1vwv5Xk', refTitle:'Wall Drills' },
+    { day:'Vendredi', type:'video', label:'Video guidee', focus:'Capsule Wall Drills — passes precises + premiere touche sous pression.', slot:2 },
+    { day:'Samedi',   type:'self',  label:'Autonome',     focus:'Sequence complete : reception dos au jeu → scan → demi-tour → distribution → replacement. Filmer → Philippe.' },
+    { day:'Dimanche', type:'rest',  label:'Repos',        focus:'Recuperation' },
+  ],
+];
+
+let activePhase = 0;
+function renderWeekly() {
+  const root     = document.getElementById('weekly-rows');
+  const capsules = capsulesByPhase[activePhase];
+  const days     = weekTemplates[activePhase];
+  root.innerHTML = days.map(d => {
+    let capsuleHtml = '';
+    let watchBtn    = '';
+    if (d.type === 'video') {
+      const c = capsules[d.slot];
+      capsuleHtml = `<span class="capsule-name">${c.title}</span>`;
+      watchBtn    = `<a class="watch-btn" href="${c.url}" target="_blank" rel="noopener">${SVG_PLAY} Watch Video ${SVG_OPEN}</a>`;
+    }
+    if (d.refUrl) {
+      capsuleHtml = `<span class="capsule-name">${d.refTitle}</span>`;
+      watchBtn    = `<a class="watch-btn ref" href="${d.refUrl}" target="_blank" rel="noopener">${SVG_PLAY} Watch Video ${SVG_OPEN}</a>`;
+    }
+    const tagIcon = d.type === 'video' ? SVG_PLAY : d.type === 'self' ? SVG_CLOCK : '\u2014';
+    return `
+      <div class="week-row ${d.type}">
+        <span class="day-name">${d.day}</span>
+        <span class="tag ${d.type}">${tagIcon} ${d.label}</span>
+        <div class="mid">
+          <div class="focus">${d.focus}</div>
+          ${capsuleHtml}
+        </div>
+        <div class="btn-cell">${watchBtn}</div>
+      </div>`;
+  }).join('');
+}
+
+// ─── PROGRESSION (#6 defensive midfielder) ───
+const progression = [
+  { week:'1-2', theme:'Phase 1 · Ball Mastery & controle', color:'#0ea5e9',
+    focus:'Construire la routine. Maitriser les 3 premiers gestes, deux pieds. Controle oriente + protection du ballon.',
+    details:[
+      'V Behind + Neymar Turn · Croqueta + Outside V · Maradona + Hook',
+      'Jours autonomes : reception orientee dos au jeu + protection du ballon sous pression',
+      'Defi S1 : 8 repetitions propres d\'affilee — garder le ballon a moins d\'un pied',
+      'Defi S2 : 12 repetitions — meme geste, rythme croissant + demi-tour fluide',
+    ]
+  },
+  { week:'3-4', theme:'Phase 2 · Passe & relance sous pression', color:'#f59e0b',
+    focus:'Developper la precision de passe et la capacite a relancer sous pression. Se retourner et distribuer.',
+    details:[
+      'Speed Dribbling · Half Turn First Touch · Quick Feet Drills',
+      'Jours autonomes : passe courte murale + demi-tour dos au jeu + relance longue',
+      'Defi S3 : 3x15 passes murales two-touch — controle + passe sans que le ballon depasse 1m',
+      'Defi S4 : sequence #6 — reception → demi-tour → passe longue vers l\'aile',
+    ]
+  },
+  { week:'5-6', theme:'Phase 3 · Terrain exterieur · Sequences #6', color:'#10b981',
+    focus:'Sortir dehors. Integrer tous les gestes dans des sequences de milieu defensif en situation reelle.',
+    details:[
+      'Hook + Cruyff Turn · Half Turn First Touch · Wall Drills',
+      'Jours autonomes : wall drills + sequence complete reception → scan → distribution',
+      'Defi S5 : 3x15 wall drills relance courte — two-touch max, precision dans les pieds',
+      'Defi S6 : sequence complete — reception dos au jeu → scan → demi-tour → distribution · Filmer → Philippe',
+    ]
+  },
+];
+
+function renderProgression() {
+  document.getElementById('progression-cards').innerHTML = progression.map((w,i) => `
+    <div class="week-card" style="border-color:${w.color}30;">
+      <div class="wk-header" style="background:${w.color}15; border-bottom:1px solid ${w.color}22;">
+        <span class="wk-badge" style="background:${w.color};">SEMAINES ${w.week}</span>
+        <span class="wk-theme">${w.theme}</span>
+      </div>
+      <div class="wk-body">
+        <p class="wk-focus" style="color:${w.color};">${w.focus}</p>
+        ${w.details.map(d => `<div class="wk-detail"><span class="arrow" style="color:${w.color};">▸</span><span>${d}</span></div>`).join('')}
+      </div>
+    </div>
+    ${i < progression.length - 1 ? '<div class="progression-connector">↓ Chaque phase s\'appuie sur la precedente ↓</div>' : ''}
+  `).join('');
+}
+
+// ─── CUES (#6 defensive midfielder) ───
+const cues = [
+  { icon:'👀', cat:'Scanner avant de recevoir',  text:'Avant meme que le ballon arrive, regarde par-dessus ton epaule. Savoir ou sont les adversaires et les espaces libres AVANT de toucher le ballon.' },
+  { icon:'🧭', cat:'Corps ouvert',               text:'Oriente ton corps a 45 degres pour voir le maximum du terrain. Un #6 qui recoit de face ne voit que la moitie du jeu.' },
+  { icon:'⚡', cat:'Deux touches maximum',        text:'En situation de pression, controle + passe en 2 touches. Plus tu gardes le ballon longtemps, plus la pression monte.' },
+  { icon:'🎯', cat:'Poids de la passe',           text:'Ni trop forte, ni trop molle. Une bonne passe arrive dans les pieds, pas devant ni derriere. C\'est le detail qui fait la difference.' },
+  { icon:'🛡️', cat:'Proteger le ballon',          text:'Ton corps est ton outil. Place-toi toujours entre le ballon et l\'adversaire. Un bon #6 ne perd jamais le ballon betement.' },
+  { icon:'🔄', cat:'Se retourner',                text:'Recevoir dos au jeu et se retourner vite. Le crochet interieur ou le Cruyff turn sont tes meilleurs amis pour te defaire de la pression.' },
+  { icon:'📐', cat:'Positionnement',              text:'En dehors du ballon, replace-toi constamment. Le #6 est toujours disponible — une option de passe sure pour ses coequipiers.' },
+  { icon:'🧠', cat:'Decision : avancer ou recycler', text:'Passe vers l\'avant si c\'est possible. Sinon, recycle le ballon en securite. Un bon #6 ne force jamais — il garde la possession.' },
+];
+
+function renderCues() {
+  document.getElementById('cues-grid').innerHTML = cues.map(c => `
+    <div class="cue-card">
+      <div class="cue-head"><span class="cue-icon">${c.icon}</span><span class="cue-cat">${c.cat}</span></div>
+      <p class="cue-text">${c.text}</p>
+    </div>
+  `).join('');
+}
+
+// ─── TIPS (self-directed for athlete) ───
+const tips = [
+  {
+    icon:'🎯', title:'C\'est ton plan',
+    text:'Personne ne va te forcer a t\'entrainer. C\'est toi qui decides de te presenter chaque jour. <strong>L\'appropriation cree la motivation.</strong>',
+    featured: true
+  },
+  { icon:'⏱️', title:'Garder ca court',               text:'15-20 minutes, c\'est gerable. Termine avant que l\'ennui s\'installe. Court et intense bat long et mou.' },
+  { icon:'🔥', title:'En faire une serie',             text:'Suis tes jours sur un calendrier. Voir la serie grandir est une source de motivation. Ne brise pas la chaine.' },
+  { icon:'📹', title:'Filme-toi',                      text:'Une fois par semaine, filme une serie. Compare avec la semaine precedente. Tu vas voir tes progres — surtout la qualite de tes passes.' },
+  { icon:'🏆', title:'Celebre les petites victoires',  text:'Defi atteint ? Ca compte. Dis-le a voix haute. La confiance se construit geste par geste.' },
+  { icon:'🧠', title:'Pense comme un #6',              text:'Le milieu defensif est le cerveau de l\'equipe. Meme a l\'entrainement seul, visualise les coequipiers autour de toi. Ou tu passerais ? Ou tu te replacerais ?' },
+  { icon:'😊', title:'Pas de perfectionnisme',         text:'Certains jours seront difficiles. C\'est normal. Se presenter, c\'est deja gagner.' },
+  { icon:'🌿', title:'Phase 3 — sortir dehors',        text:'Les semaines 5-6 se font a l\'exterieur. Le changement de surface et d\'espace est en soi un defi — c\'est voulu.' },
+  { icon:'💬', title:'Check-in a mi-parcours',         text:'Apres la semaine 3, demande-toi : « Qu\'est-ce qui s\'est bien passe ? Qu\'est-ce qui etait difficile ? » Ajuster si necessaire avec Philippe.' },
+  { icon:'🎥', title:'Regarde les pros',                text:'Etudie comment les #6 professionnels recoivent et distribuent. Observe leur positionnement, leur premiere touche, leur prise de decision. Apprends en regardant.' },
+];
+
+function renderTips() {
+  document.getElementById('tips-list').innerHTML = tips.map(t => `
+    <div class="tip-card ${t.featured ? 'featured' : ''}">
+      <span class="tip-icon">${t.icon}</span>
+      <div>
+        <div class="tip-title">${t.title}</div>
+        <p class="tip-text">${t.text}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleQuality() {
+  const header = document.querySelector('.quality-header');
+  const body   = document.getElementById('quality-body');
+  header.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+// ─── TABS ───
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelector(`[data-panel="${btn.dataset.tab}"]`).classList.add('active');
+  });
+});
+
+// ─── PHASE SELECTOR ───
+document.querySelectorAll('.phase-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activePhase = Number(btn.dataset.phase);
+    document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.phase-strip').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.phase-strip')[activePhase].classList.add('active');
+    renderWeekly();
+  });
+});
+
+// ─── INIT ───
+renderWeekly();
+renderProgression();
+renderCues();
+renderTips();
+</script>
+</body>
+</html>
